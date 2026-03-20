@@ -6,7 +6,7 @@ pipeline {
         DOCKER_TAG = "${BUILD_NUMBER}"
         REGION = "ap-south-1"
         CLUSTER_NAME = "java-eks-cluster"
-        SONARQUBE_URL = "http://13.233.65.153:9000"
+        SONARQUBE_URL = "http://3.110.210.157:9000"
         SONAR_PROJECT_KEY = "java-app"
         SONAR_TOKEN = credentials('sonar-token') // Store token securely in Jenkins credentials
     }
@@ -35,26 +35,7 @@ pipeline {
     }
 }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
-            }
-        }
-
-        stage('Docker Login') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-cred',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                    '''
-                }
-            }
-        }
-
+        
         stage('Push Docker Image') {
             steps {
                 sh '''
