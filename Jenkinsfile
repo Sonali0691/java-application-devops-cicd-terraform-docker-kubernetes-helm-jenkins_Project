@@ -8,34 +8,34 @@ pipeline {
         CLUSTER_NAME = "java-eks-cluster"
         SONARQUBE_URL = "http://3.110.210.157:9000"
         SONAR_PROJECT_KEY = "java-app"
-        SONAR_TOKEN = credentials('sonar-token') // Store token securely in Jenkins credentials
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
                 checkout scm
             }
         }
 
-      stage('SonarQube Analysis') {
-    steps {
-        script {
-            docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
-                sh '''
-                sonar-scanner \
-                -Dsonar.projectKey=java-app \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://13.233.65.153:9000 \
-                -Dsonar.token=$SONAR_TOKEN \
-                -Dsonar.userHome=$WORKSPACE/.sonar
-                '''
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
+                        sh '''
+                        sonar-scanner \
+                        -Dsonar.projectKey=java-app \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://3.110.210.157:9000 \
+                        -Dsonar.token=$SONAR_TOKEN \
+                        -Dsonar.userHome=$WORKSPACE/.sonar
+                        '''
+                    }
+                }
             }
         }
-    }
-}
 
-        
         stage('Push Docker Image') {
             steps {
                 sh '''
@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-     
+    }   // ✅ IMPORTANT: closing stages block
 
     post {
         success {
