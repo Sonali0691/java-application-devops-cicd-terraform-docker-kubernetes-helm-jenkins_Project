@@ -16,21 +16,22 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    script {
-                        docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
-                            sh '''
-                            sonar-scanner \
-                            -Dsonar.projectKey=java-app \
-                            -Dsonar.sources=.
-                            '''
-                        }
-                    }
+      stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') {
+            script {
+                docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
+                    sh '''
+                    sonar-scanner \
+                    -Dsonar.projectKey=java-app \
+                    -Dsonar.sources=. \
+                    -Dsonar.userHome=$WORKSPACE/.sonar
+                    '''
                 }
             }
         }
+    }
+}
 
         stage('Push Docker Image') {
             steps {
