@@ -16,22 +16,33 @@ pipeline {
             }
         }
 
-     stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv('SonarQube') {
-            script {
-                docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
-                    sh '''
-                    sonar-scanner \
-                    -Dsonar.projectKey=java-app \
-                    -Dsonar.sources=. \
-                    -Dsonar.userHome=$WORKSPACE/.sonar
-                    '''
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    script {
+                        docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
+                            sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=java-app \
+                            -Dsonar.sources=. \
+                            -Dsonar.userHome=$WORKSPACE/.sonar
+                            '''
+                        }
+                    }
                 }
             }
         }
-    }
-}
+
+        // ✅ ADD THIS STAGE (VERY IMPORTANT)
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+                docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE:latest
+                '''
+            }
+        }
+
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
@@ -42,7 +53,6 @@ pipeline {
                     sh '''
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                     docker push $DOCKER_IMAGE:$DOCKER_TAG
-                    docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKER_IMAGE:latest
                     docker push $DOCKER_IMAGE:latest
                     '''
                 }
