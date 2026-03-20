@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "sonalihub/javaapp1:latest"
+        DOCKER_IMAGE = "sonalihub/javaapp1"
         DOCKER_TAG = "${BUILD_NUMBER}"
         REGION = "ap-south-1"
         CLUSTER_NAME = "java-eks-cluster"
