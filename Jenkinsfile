@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-      stage('SonarQube Analysis') {
+     stage('SonarQube Analysis') {
     steps {
         withSonarQubeEnv('SonarQube') {
             script {
@@ -32,7 +32,6 @@ pipeline {
         }
     }
 }
-
         stage('Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
