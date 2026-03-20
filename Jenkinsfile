@@ -19,11 +19,15 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    sonar-scanner \
-                    -Dsonar.projectKey=java-app \
-                    -Dsonar.sources=.
-                    '''
+                    script {
+                        docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
+                            sh '''
+                            sonar-scanner \
+                            -Dsonar.projectKey=java-app \
+                            -Dsonar.sources=.
+                            '''
+                        }
+                    }
                 }
             }
         }
