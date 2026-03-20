@@ -23,14 +23,14 @@ pipeline {
             steps {
                 script {
                     docker.image('sonarsource/sonar-scanner-cli:latest').inside('--entrypoint=""') {
-                        sh '''
-                        sonar-scanner \
-                        -Dsonar.projectKey=java-app \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://3.110.210.157:9000 \
-                        -Dsonar.token=$SONAR_TOKEN \
-                        -Dsonar.userHome=$WORKSPACE/.sonar
-                        '''
+                      sh '''
+sonar-scanner \
+-Dsonar.projectKey=java-app \
+-Dsonar.sources=. \
+-Dsonar.host.url=http://3.110.210.157:9000 \
+-Dsonar.login=$SONAR_TOKEN \
+-Dsonar.userHome=$WORKSPACE/.sonar
+'''
                     }
                 }
             }
