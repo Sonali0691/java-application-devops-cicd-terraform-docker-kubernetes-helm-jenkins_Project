@@ -46,16 +46,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to EKS') {
-            steps {
-                sh '''
-                aws eks update-kubeconfig --region $REGION --name $CLUSTER_NAME
-                kubectl set image deployment/java-war-deployment \
-                java-war-container=$DOCKER_IMAGE:$DOCKER_TAG
-                '''
-            }
-        }
-    }
+     
 
     post {
         success {
